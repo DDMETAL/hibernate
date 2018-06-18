@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户管理</title>
+<script type="text/javascript" src="jquery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		loadUsers();
+		$("#save").click(saveUser);
+		$("#users").on('click','tr',loadUser);
+		$("#update").click(updateUser);
+		$("#add").click(cleanForm);
+	});
+	function updateUser(){
+		//获取表单数据，发送到服务器
+		var name=$("#name").val();
+		var password=$("#password").val();
+		var age=$("#age").val();
+		var salary=$("#salary").val();
+		
+		var id=$(this).data('user').id;
+		
+		var url="user/update.do";
+		var data={id:id,name:name,password:password,age:age,salary:salary};
+		$.post(url,data,function(result){
+			if(result.state==1){
+				loadUsers();
+				cleanForm();
+			}else{
+				alert(result.message);
+			}
+		});
+	}
+	function loadUser(){
+		//$(this) 是tr对象
+		var id=$(this).data('id');
+		console.log(id);
+		var url="user/load.do";
+		var data={id:id};
+		$.getJSON(url,data,function(result){
+			if(result.state==1){
+				showUser(result.data);
+			}else{
+				alert(result.message);
+			}
+		});
+	}
+	function showUser(user){
+		$("#name").val(user.name);
+		$("#password").val(user.password);
+		$("#age").val(user.age);
+		$("#salary").val(user.salary);
+		
+		$("#update").data('user',user).show();
+		$("#save").hide();
+		$("#title").html('更新用户信息');
+	}
+	function saveUser(){
+		var name=$("#name").val();
+		var password=$("#password").val();
+		var age=$("#age").val();
+		var salary=$("#salary").val();
+		
+		var url="user/save.do";
+		var data={name:name,password:password,age:age,salary:salary};
+		$.post(url,data,function(result){
+			if(result.state==1){
+				var data=result.data;
+				console.log(data);
+				loadUsers();
+				cleanForm();
+			}else{
+				alert(result.message);
+			}
+		})
+	}
+	
+	function cleanForm(){
+		$("#name").val('');
+		$("#password").val('');
+		$("#age").val('');
+		$("#salary").val('');
+		$("#title").html('添加用户');
+		$("#save").show();
+		$("#update").hide();
+		
+	}
+	function loadUsers(){
+		var url="user/list.do";
+		$.getJSON(url,function(result){
+			if(result.state==1){
+				var users=result.data;
+				console.log(users);
+				showUsers(users);
+			}else{
+				alert(result.message);
+			}
+		})
+	}
+	function showUsers(users){
+		var tbody=$("#users tbody");
+		tbody.empty();
+		for(var i=0;i<users.length;i++){
+			var u=users[i];
+			var tr=template.replace('[id]',u.id)
+						   .replace('[name]',u.name)
+						   .replace('[age]',u.age);
+			tr=$(tr).data('id',u.id);
+			tbody.append(tr);
+			
+		}
+	}
+	var template='<tr><td>[id]</td> '+
+				'<td>[name]</td> '+
+				'<td>[age]</td></tr>';		
+</script>
+</head>
+<body>
+	<div>
+		<h1>用户管理</h1>
+		<input type="button" value="添加" id="add">
+	</div>
+	<div>
+		<h2>全部用户</h2>
+		<table id="users">
+			<thead>
+				<tr>
+					<th>编号</th>
+					<th>姓名</th>
+					<th>年龄</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>Tom</td>
+					<td>20</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<h2 id="title">添加用户</h2>
+		<div>
+			<label>用户名:</label>
+			<input type="text" id="name">
+		</div>
+		<div>
+			<label>密码:</label>
+			<input type="password" id="password">
+		</div>
+		<div>
+			<label>年龄:</label>
+			<input type="text" id="age">
+		</div>
+		<div>
+			<label>薪资:</label>
+			<input type="text" id="salary">
+		</div>
+		<div>
+			<input type="button" value="保存" id="save">
+		</div>
+		<div>
+			<input type="button" style="display:none;" value="更新" id="update">
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<!-- 定义了类和表的对应关系 -->
+	<class name="com.dmetal.ssh.entity.User" table="t_user">
+		<!-- 定义属性和字段的对应关系 -->
+		<id name="id" column="u_id">
+			<!-- 主键生成器 -->
+			<!--<generator class="org.hibernate.id.IncrementGenerator"></generator>  -->
+			<generator class="identity"></generator>
+		</id>
+		<property name="name" column="u_name"/>
+		<property name="password" column="u_password"/>
+		<property name="age" column="u_age"/>
+		<property name="salary" column="u_salary"/>
+		<property name="hiredate" column="u_hiredate"/>	
+	</class>
+</hibernate-mapping>

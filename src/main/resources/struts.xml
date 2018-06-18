@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 从Struts-2.5.dtd文件中复制DOCTYPE -->
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN" "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+	<constant name="struts.action.extension" value="do"/>
+	<package name="user" namespace="/user" extends="json-default">
+		<!-- 登记拦截器组件 -->
+		<interceptors>
+			<interceptor name="exp" class="exceptionInterceptor"></interceptor>
+			<interceptor-stack name="allStack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="exp"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="allStack"></default-interceptor-ref>
+		<global-results>
+			<result type="json" name="json">
+				<param name="root">result</param>
+			</result>
+		</global-results>
+		<action name="list" class="userAction" method="list">
+		</action>
+		<action name="save" class="userAction" method="save">
+		</action>
+		<action name="load" class="userAction" method="load">
+		</action>
+		<action name="update" class="userAction" method="update"></action>
+	</package>
+	<package name="u" namespace="/u" extends="json-default">
+		<action name="list" class="usrAction" method="list">
+			<result name="success">
+				/WEB-INF/jsp/list.jsp
+			</result>
+		</action>
+	</package>
+</struts>
